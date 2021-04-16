@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    #container .player {
+      display: flex;
+    }
+    #container .player,
+    #container .dipai,
+    #container .guo {
+      margin: 20px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+    #container .player .card_wrapper {
+      flex: 1;
+    }
+    #container .dizhu .card_wrapper {
+      color: red;
+    }
+    #container .player .card_wrapper .card,
+    #container .dipai .card,
+    #container .guo .card {
+      display: inline-block;
+      width: 50px;
+      height: 70px;
+      padding: 4px;
+      border: 1px solid #ddd;
+    }
+    #container .player .card_wrapper .active {
+      position: relative;
+      top: -10px;
+    }
+    #container .player .btn_wrapper {
+      flex: 0 0 160px;
+      display: none;
+    }
+    #container .player.active .btn_wrapper {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <button id="start">start game</button>
+  <div id="container">
+    <div class="player">
+      <div class="card_wrapper">
+        <span class="card">1</span>
+        <span class="card">2</span>
+      </div>
+      <div class="btn_wrapper active">
+        <button>chupai</button>
+        <button>buchu</button>
+      </div>
+    </div>
+    <div class="dipai">
+      <span class="card">1</span>
+      <span class="card">2</span>
+    </div>
+    <div class="guo">
+      <span class="card">1</span>
+      <span class="card">2</span>
+    </div>
+  </div>
+  <script src="./utils.js"></script>
+  <script src="./card.js"></script>
+  <script src="./player.js"></script>
+  <script src="./game.js"></script>
+  <script src="./index.js"></script>
+</body>
+</html>
