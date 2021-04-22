@@ -5,9 +5,47 @@
   <title>Document</title>
 </head>
 <body>
+  <script src="./node_modules/lodash/lodash.js"></script>
   <script>
-    var str = false;
-    console.log(str && str);
+    var arr = [
+      {
+        number: 11,
+        youxian: 11,
+      },
+      {
+        number: 7,
+        youxian: 7,
+      },
+      {
+        number: 7,
+        youxian: 7,
+      },
+      {
+        number: 7,
+        youxian: 7,
+      },
+      {
+        number: 8,
+        youxian: 8,
+      },
+      {
+        number: 9,
+        youxian: 9,
+      },
+      {
+        number: 9,
+        youxian: 9,
+      },
+      {
+        number: 9,
+        youxian: 9,
+      },
+      {
+        number: 10,
+        youxian: 10,
+      },
+    ];
+    console.log(_.sortBy(arr, ['youxian']));
   </script>
 </body>
 </html>

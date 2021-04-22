@@ -24,20 +24,24 @@ function Game () {
   this.guoType = null;
   this.uiTimer = null;
   this.activeId = null;
+  this.gameover = false;
 }
 
 Game.prototype = {
   // 开始游戏
   start: function () {
+    clearInterval(this.uiTimer);
+    this.uiTimer = null;
+
     this.initPlayers();
     // this.initCards();
     this.moniCards();
     this.fapai();
     this.initUI();
+
     /* this.uiTimer = setInterval(() => {
-      // this.players[1].cards.splice(1, 1);
-      this.initUI();
-    }, 1000); */
+      this.computeActive();
+    }, 3000); */
   },
   // 初始化玩家
   initPlayers: function () {
@@ -124,7 +128,17 @@ Game.prototype = {
   cardSort: function (a, b) {
     return b.youxian - a.youxian;
   },
+  checkGameover: function () {
+    for (var i = 0; i < this.players.length; i++) {
+      if (!this.players[i].cards.length) {
+        this.gameover = true;
+        break;
+      }
+    }
+  },
   initUI: function () {
+    this.checkGameover();
+
     let html = '';
     for (let i = 0; i < this.players.length; i++) {
       html += '<div class="player' + (this.players[i].isDiZhu ? ' dizhu': '') + (i == this.activeId ? ' active' : '') + '"><div class="card_wrapper">';
@@ -132,7 +146,11 @@ Game.prototype = {
       for (let j = 0; j < cards.length; j++) {
         html += '<span class="card" data-i="' + j + '">' + cards[j].number + '</span>';
       }
-      html += '</div><div class="btn_wrapper"><button class="chupai">chupai</button><button class="buchu">buchu</button></div></div>';
+      html += '</div>';
+      if (!this.gameover) {
+        html += '<div class="btn_wrapper"><button class="chupai">chupai</button><button class="buchu">buchu</button></div>';
+      }
+      html += '</div>';
     }
 
     html += '<div class="dipai">';
@@ -146,6 +164,10 @@ Game.prototype = {
       html += '<span class="card">' + this.guo[i].number + '</span>';
     }
     html += '</div>';
+
+    if (this.gameover) {
+      html += '<div class="over">game over...</div>';
+    }
 
     document.querySelector('#container').innerHTML = html;
   },
@@ -192,35 +214,20 @@ Game.prototype = {
       return false;
     }
     // 单/双/三 3
-    if (this.guoType == 'yizhang' || this.guoType == 'liangzhang' || this.guoType == 'sanzhang') {
+    if (this.guoType == 'yizhang' ||      // 单
+        this.guoType == 'liangzhang' ||   // 双
+        this.guoType == 'sanzhang' ||     // 三
+        type.indexOf('sandai') != -1 ||   // 三带
+        type.indexOf('feiji') != -1 ||   // 飞机
+        type.indexOf('shunzi') != -1 ||     // 顺子
+        type.indexOf('liandui') != -1 ||  // 连对
+        type.indexOf('sandui') != -1 ||   // 三联对
+        type.indexOf('sidai') != -1) {    // 四带
       if (cards[0].youxian > this.guo[0].youxian) {
         return true;
       }
     }
-    // 三带 2
-    if (type.indexOf('sandai') != -1) {
-      if (cards[0].youxian > this.guo[0].youxian) {
-        return true;
-      }
-    }
-    // 顺子
-    if (type.indexOf('shun') != -1) {
-      if (cards[0].youxian > this.guo[0].youxian) {
-        return true;
-      }
-    }
-    // 连对
-    if (type.indexOf('liandui') != -1) {
-      if (cards[0].youxian > this.guo[0].youxian) {
-        return true;
-      }
-    }
-    // 四带
-    if (type.indexOf('sidai') != -1) {
-      if (cards[0].youxian > this.guo[0].youxian) {
-        return true;
-      }
-    }
+    
     console.log('太小');
     return false;
   }
