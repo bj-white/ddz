@@ -23,6 +23,9 @@ function Game () {
   this.guo = [];
   this.guoType = null;
   this.uiTimer = null;
+  this.startId = null;
+  this.qiangId = null;
+  this.qiangStr = '';
   this.activeId = null;
   this.gameover = false;
 }
@@ -122,8 +125,10 @@ Game.prototype = {
     }
     
     var rd = (Math.random() * 2).toFixed();
-    this.players[rd].isDiZhu = true;
-    this.activeId = rd;
+    this.startId = rd;
+    this.qiangId = rd;
+    /* this.players[rd].isDiZhu = true;
+    this.activeId = rd; */
   },
   cardSort: function (a, b) {
     return b.youxian - a.youxian;
@@ -132,6 +137,7 @@ Game.prototype = {
     for (var i = 0; i < this.players.length; i++) {
       if (!this.players[i].cards.length) {
         this.gameover = true;
+        this.activeId = null;
         break;
       }
     }
@@ -141,16 +147,19 @@ Game.prototype = {
 
     let html = '';
     for (let i = 0; i < this.players.length; i++) {
-      html += '<div class="player' + (this.players[i].isDiZhu ? ' dizhu': '') + (i == this.activeId ? ' active' : '') + '"><div class="card_wrapper">';
+      html += '<div class="player' + (this.players[i].isDiZhu ? ' dizhu': '') + (i == this.activeId ? ' active' : '') + (i == this.qiangId ? ' qiang' : '') + '"><div class="card_wrapper">';
       var cards = this.players[i].cards;
       for (let j = 0; j < cards.length; j++) {
         html += '<span class="card" data-i="' + j + '">' + cards[j].number + '</span>';
       }
-      html += '</div>';
-      if (!this.gameover) {
-        html += '<div class="btn_wrapper"><button class="chupai">chupai</button><button class="buchu">buchu</button></div>';
+      html += '</div><div class="btn_wrapper">';
+      if (this.qiangId !== null) {
+        html += '<button class="qiangdizhu">qiangdizhu</button><button class="buqiang">buqiang</button>';
       }
-      html += '</div>';
+      if (this.activeId !== null) {
+        html += '<button class="chupai">chupai</button><button class="buchu">buchu</button>';
+      }
+      html += '</div></div>';
     }
 
     html += '<div class="dipai">';
@@ -230,5 +239,48 @@ Game.prototype = {
     
     console.log('太小');
     return false;
+  },
+  qiangdizhu: function () {
+    this.qiangStr += '1';
+    this.checkQiang();
+  },
+  buqiang: function () {
+    this.qiangStr += '0';
+    this.checkQiang();
+  },
+  checkQiang: function () {
+    console.log(this.qiangStr);
+    if (this.qiangStr == '000' ||
+      this.qiangStr == '100' ||
+      this.qiangStr == '1111' ||
+      this.qiangStr == '1101' ||
+      this.qiangStr == '1011')
+    {
+      var num = this.startId;
+      this.players[num].isDiZhu = true;
+      this.activeId = num;
+      this.qiangId = null;
+    } else if (this.qiangStr == '010' ||
+      this.qiangStr == '01101' ||
+      this.qiangStr == '1110' ||
+      this.qiangStr == '1100')
+    {
+      var num = (this.startId + 1) % 3;
+      this.players[num].isDiZhu = true;
+      this.activeId = num;
+      this.qiangId = null;
+    } else if (this.qiangStr == '001' ||
+      this.qiangStr == '01100' ||
+      this.qiangStr == '1010')
+    {
+      var num = (this.startId + 2) % 3;
+      this.players[num].isDiZhu = true;
+      this.activeId = num;
+      this.qiangId = null;
+    } else {
+      this.qiangId = (this.qiangId + 1) % 3;
+    }
+
+    this.initUI();
   }
 };

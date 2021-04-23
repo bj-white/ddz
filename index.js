@@ -21,6 +21,12 @@ document.body.addEventListener('click', function (e) {
     }
     game.chupai(result);
   }
+  if (hasClass(target, 'qiangdizhu')) {
+    game.qiangdizhu();
+  }
+  if (hasClass(target, 'buqiang')) {
+    game.buqiang();
+  }
 });
 
 function start () {
